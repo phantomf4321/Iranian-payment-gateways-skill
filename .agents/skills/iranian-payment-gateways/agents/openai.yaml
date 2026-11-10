@@ -1,0 +1,4 @@
+interface:
+  display_name: "Iranian Payment Gateways"
+  short_description: "Integrate and audit secure Zarinpal payments"
+  default_prompt: "Use $iranian-payment-gateways to integrate or audit Zarinpal in this project."

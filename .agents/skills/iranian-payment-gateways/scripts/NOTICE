@@ -1,0 +1,3 @@
+_official_quick_validate.py is an unmodified OpenAI skill-creator validator from
+https://github.com/openai/skills/blob/49f948faa9258a0c61caceaf225e179651397431/skills/.system/skill-creator/scripts/quick_validate.py
+Distributed under Apache License 2.0; see ../LICENSE.txt.
