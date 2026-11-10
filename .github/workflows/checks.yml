@@ -1,0 +1,50 @@
+name: Skill and payment checks
+
+on:
+  push:
+    branches: [zarinpal]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres@sha256:5264710be20f409750ac6dc4e5706dcef929c87e241605463f0f9aefa932a8d9
+        env:
+          POSTGRES_USER: payments
+          POSTGRES_DB: payments
+          POSTGRES_PASSWORD: test-only
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U payments -d payments"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PAYMENTS_TEST_POSTGRES: "1"
+      PGPASSWORD: test-only
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: python -m django check --settings=tests.settings
+      - run: python -m django makemigrations --check --dry-run --settings=tests.settings
+      - run: python .agents/skills/iranian-payment-gateways/scripts/validate_skill.py
+      - run: >-
+          python .agents/skills/iranian-payment-gateways/scripts/validate_config.py
+          --env-file .agents/skills/iranian-payment-gateways/assets/templates/django/.env.example
+      - run: >-
+          python .agents/skills/iranian-payment-gateways/scripts/validate_integration.py
+          .agents/skills/iranian-payment-gateways/assets/templates/django

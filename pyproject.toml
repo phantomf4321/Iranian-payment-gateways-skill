@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = ["."]
+testpaths = ["tests", ".agents/skills/iranian-payment-gateways/assets/templates/django/tests"]
+addopts = "-ra --strict-markers"
+markers = ["postgres: requires PostgreSQL; exercises actual row locks"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["_official_quick_validate.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
